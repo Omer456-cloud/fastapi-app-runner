@@ -33,6 +33,15 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+    - name: Check App Runner Service Status
+      id: status
+      run: |
+        status=$(aws apprunner describe-service --service-arn ${{ secrets.SERVICE_ARN }} --query 'Service.Status' --output text)
+        echo "Service status: $status"
+        if [ "$status" != "RUNNING" ]; then
+          echo "Service is not in RUNNING state. Exiting."
+          exit 1
+
     - name: Trigger App Runner deployment
       run: |
         aws apprunner start-deployment --service-arn ${{ secrets.SERVICE_ARN }}
