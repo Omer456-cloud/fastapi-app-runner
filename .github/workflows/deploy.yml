@@ -36,7 +36,7 @@ jobs:
     - name: Check App Runner Service Status
       id: status
       run: |
-        status=$(aws apprunner describe-service --service-arn ${{ secrets.SERVICE_ARN }} --query 'Service.Status' --output text)
+        status=$(aws apprunner describe-service --service-arn "${{ secrets.SERVICE_ARN }}" --query 'Service.Status' --output text)
         echo "Service status: $status"
         if [ "$status" != "RUNNING" ]; then
           echo "Service is not in RUNNING state. Exiting."
@@ -44,4 +44,4 @@ jobs:
 
     - name: Trigger App Runner deployment
       run: |
-        aws apprunner start-deployment --service-arn ${{ secrets.SERVICE_ARN }}
+        aws apprunner start-deployment --service-arn "${{ secrets.SERVICE_ARN }}"
